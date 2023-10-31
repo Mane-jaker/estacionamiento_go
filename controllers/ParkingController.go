@@ -28,8 +28,17 @@ func NewParkingController(app fyne.App, win fyne.Window, container *fyne.Contain
 	}
 }
 
-func (p *ParkingController) AddVehicle(car *models.Vehicle) {
+func (p *ParkingController) AddVehicle() {
+	car := models.NewVehicle()
+	car.SetPox(0)
+	car.SetPoy(280)
+	car.Img().Resize(fyne.NewSize(50, 50))
+	car.Img().Move(fyne.NewPos(0, 280))
+	p.container.Add(car.Img())
+	p.container.Refresh()
+
 	p.parkingLot.Enter(car, car.Img(), p.container)
 	time.Sleep(time.Duration(rand.Intn(5)+1) * time.Second)
+
 	p.parkingLot.Exit(car, car.Img(), p.container)
 }

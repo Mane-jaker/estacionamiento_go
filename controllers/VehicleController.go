@@ -1,7 +1,8 @@
 package controllers
 
 import (
-	"estacionamiento/models"
+	"math/rand"
+	"time"
 
 	"fyne.io/fyne/v2"
 )
@@ -20,13 +21,13 @@ func NewVehicleController(app fyne.App, win fyne.Window, container *fyne.Contain
 	}
 }
 
-func (v *VehicleController) CreateVehicle() *models.Vehicle {
-	car := models.NewVehicle()
-	car.SetPox(0)
-	car.SetPoy(280)
-	car.Img().Resize(fyne.NewSize(96, 96))
-	car.Img().Move(fyne.NewPos(0, 280))
-	v.container.Add(car.Img())
-	v.container.Refresh()
-	return car
+func (v *VehicleController) Create() {
+	pc := NewParkingController(v.app, v.win, v.container)
+
+	for i := 0; i < 100; i++ {
+		go pc.AddVehicle()
+		time.Sleep(time.Duration(rand.ExpFloat64()/0.5) * time.Second)
+	}
+
+	select {}
 }

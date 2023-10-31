@@ -2,8 +2,7 @@ package screens
 
 import (
 	"estacionamiento/controllers"
-	"math/rand"
-	"time"
+	"image/color"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -29,29 +28,19 @@ func NewMainScreen() *MainScreen {
 }
 
 func (m *MainScreen) Start() {
+	rect := canvas.NewRectangle(color.White)
+	rect.Resize(fyne.NewSize(1920, 1080))
 	background := canvas.NewImageFromFile("assets/estacionamiento.png")
 	background.Resize(fyne.NewSize(1200, 668))
 	background.Move(fyne.NewPos(100, 50))
+	m.sceneContainer.Add(rect)
 	m.sceneContainer.Add(background)
 	m.win.SetContent(m.sceneContainer)
 
 	vc := controllers.NewVehicleController(m.app, m.win, m.sceneContainer)
-	pc := controllers.NewParkingController(m.app, m.win, m.sceneContainer)
 
-	m.createVehicles(vc, pc)
+	go vc.Create()
 
 	m.win.CenterOnScreen()
 	m.win.ShowAndRun()
-}
-
-func (m *MainScreen) createVehicles(vc *controllers.VehicleController, pc *controllers.ParkingController) {
-	for i := 0; i < 100; i++ {
-		go m.addVehicle(vc, pc)
-		time.Sleep(time.Duration(rand.ExpFloat64()/0.5) * time.Second)
-	}
-}
-
-func (m *MainScreen) addVehicle(vc *controllers.VehicleController, pc *controllers.ParkingController) {
-	car := vc.CreateVehicle()
-	pc.AddVehicle(car)
 }
